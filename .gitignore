@@ -1,0 +1,11 @@
+# python
+*.pyc
+
+# data source
+static/upload/*
+
+# config.py
+config.py
+
+# run.sh
+run.sh
