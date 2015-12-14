@@ -72,7 +72,7 @@ class Involvement(Base):
     __tablename__ = 'involvement'
     id = Column(Integer, primary_key=True)
     uid = Column(Integer, ForeignKey('users.uid'))
-    type = Column(Integer, nullable=False)
+    involve_type = Column(Integer, nullable=False)
     user = relationship(User)
     act_id = Column(Integer, ForeignKey('activity.act_id'))
     activity = relationship(Activity)
