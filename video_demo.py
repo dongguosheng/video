@@ -182,7 +182,7 @@ class InvolveAddHandler(BaseHandler):
         uid = self.get_argument('uid', '')
         act_id = self.get_argument('act_id', '')
         desc = self.get_argument('desc', '')
-        type = self.get_argument('type', '')
+        involve_type = self.get_argument('type', '')
         # init json result
         rs = {'code' : 1, 'msg' : ''}
         # args check
@@ -191,8 +191,8 @@ class InvolveAddHandler(BaseHandler):
             self.write(json.dumps(rs))
             return
         try:
-            type = int(type)
-            if type > 3:
+            involve_type = int(involve_type)
+            if involve_type > 3:
                 rs['msg'] = INVALID_ARGS
                 self.write(json.dumps(rs))
                 return
@@ -203,7 +203,7 @@ class InvolveAddHandler(BaseHandler):
         # db operations
         session = self.backend.get_session()
         try:
-            involvement  = Involvement(uid=uid, act_id=act_id, desc=desc, type=type, publish_time=datetime.now())
+            involvement  = Involvement(uid=uid, act_id=act_id, desc=desc, involve_type=involve_type, publish_time=datetime.now())
             session.add(involvement)
             session.commit()
             rs['code'] = 0
