@@ -1,2 +1,2 @@
-# tornado_app
-learn tornado
+# tornado app
+learn tornado and sqlalchemy.
