@@ -90,6 +90,47 @@ class PhoneRegistHandler(BaseHandler):
     def get(self):
         self.post()
 
+class ProfileViewHandler(BaseHandler):
+    def get(self):
+        # receive args
+        uid = self.get_argument('uid', '')
+        # init json result
+        rs = {'code' : 1, 'msg' : ''}
+        # args check
+        if len(uid) == 0:
+            rs['msg'] = INVALID_ARGS
+            self.write(json.dumps(rs))
+            return
+        # db operations
+        session = self.backend.get_session()
+        try:
+            print 'uid: ' + uid
+            user_profile = session.query(UserProfile).filter(UserProfile.uid == uid).first()
+            rs['code'] = 0
+            rs['user_profile'] = self.to_json(user_profile)
+        except Exception, e:
+            rs['msg'] = str(e).encode('utf-8')
+            session.rollback()
+        finally:
+            self.write(json.dumps(rs))
+            session.close()
+
+    def to_json(self, user_profile):
+        rs_dict = {}
+        rs_dict['uid'] = str(user_profile.uid)
+        rs_dict['uname'] = user_profile.uname
+        rs_dict['gender'] = str(user_profile.gender)
+        rs_dict['age'] = str(user_profile.age)
+        rs_dict['address'] = user_profile.address
+        rs_dict['birthday'] = str(user_profile.birthday)
+        rs_dict['city'] = user_profile.city
+        rs_dict['score'] = str(user_profile.score)
+        rs_dict['vote_max'] = str(user_profile.vote_max)
+        return json.dumps(rs_dict)
+
+    def post(self):
+        self.get()
+
 class ProfileModifyHandler(BaseHandler):
     def post(self):
         # receive args
@@ -304,6 +345,7 @@ application = tornado.web.Application([
     (r'/upload', UploadHandler),
     (r'/advice/submit', AdviceSubmitHandler),
     (r'/user/modifyProfile', ProfileModifyHandler),
+    (r'/user/profile', ProfileViewHandler),
     (r'/static/(.*)', tornado.web.StaticFileHandler, {'path' : './static/'})
 ], debug=True)
 

@@ -40,12 +40,16 @@ class UserProfile(Base):
     uid = Column(Integer, ForeignKey('users.uid'))
     uname = Column(String(80))
     gender = Column(Integer)
+    age = Column(Integer)
+    address = Column(String(80))
     birthday = Column(Date)
     city = Column(String(50))
+    score = Column(Integer)
+    vote_max = Column(Integer)
     user = relationship(User)
 
     def __repr__(self):
-        return 'uid: %s, uname: %s, gender: %d, birthday: %s, city: %s' % (self.uid, self.uname, self.gender, str(self.birthday), self.city)
+        return 'uid: %s, uname: %s, gender: %d, age: %d, address: %s, birthday: %s, city: %s, score: %d, vote_max: %d' % (self.uid, self.uname, self.gender, self.age, self.address, str(self.birthday), self.city, self.score, self.vote_max)
 
 class Activity(Base):
     '''
