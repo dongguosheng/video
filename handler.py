@@ -13,15 +13,17 @@ from utils import encode_md5
 from models import *
 from config import *
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render('login.html', title=u'Admin Demo')
-        # self.write('Hello World.')
-
 class BaseHandler(tornado.web.RequestHandler):
     @property
     def backend(self):
         return Backend.instance()
+    def get_current_user(self):
+        return self.get_secure_cookie('uname')
+
+class MainHandler(BaseHandler):
+    def get(self):
+        self.render('login.html', title=u'Admin Demo')
+        # self.write('Hello World.')
 
 def to_dict(user_profile):
     rs_dict = {}
@@ -41,7 +43,7 @@ class LoginHandler(BaseHandler):
     def post(self):
         # receive args
         rs_type = self.get_argument('rs_type', 0)
-        print '======>' + str(rs_type)
+        # print '======>' + str(rs_type)
         uname = self.get_argument('uname', '')
         upass = self.get_argument('upass', '')
         # init json result
@@ -65,6 +67,8 @@ class LoginHandler(BaseHandler):
                 rs['result'].append( {'uname': u.uname, 'upass': upass} )
                 user_profile = session.query(UserProfile).filter(UserProfile.uid == u.uid).first()
                 user_profile_dict = to_dict(user_profile)
+                # set cookies
+                self.set_secure_cookie('uname', uname)
             else:
                 rs['msg'] = EMPTY_RESULT
         except Exception, e:
@@ -84,7 +88,7 @@ class LoginHandler(BaseHandler):
             session.close()
 
     def get(self):
-        self.post()
+        self.render('login.html')
 
 class ScoreToVoteHandler(BaseHandler):
     def post(self):
@@ -152,6 +156,7 @@ class PhoneRegistHandler(BaseHandler):
         self.post()
 
 class ProfileViewHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         # receive args
         uid = self.get_argument('uid', '')
@@ -338,6 +343,30 @@ class AdviceSubmitHandler(BaseHandler):
 
     def get(self):
         self.post()
+
+class AdviceViewHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        page = self.get_argument('page', '')
+        rs_type = self.get_argument('rs_type', 0)
+        if len(page) == 0:
+            page = 1
+        else:
+            page = int(page)
+        # db operations
+        session = self.backend.get_session()
+        advice_list = []
+        try:
+            advice_list = session.query(Advice).order_by(Advice.advice_id).slice(0, 30)
+            print "advice list len: %d" % len(advice_list)
+        except Exception, e:
+            print e
+        finally:
+            if rs_type == 0:
+                self.render('advice.html', advice_list=advice_list)
+
+    def post(self):
+        self.get()
 
 class UploadHandler(tornado.web.RequestHandler):
     def initialize(self):

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head lang="zh-CN">
-        <title>Admin Demo</title>
+        <title>管理员登录</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,16 +10,32 @@
 
     <body>
         <div class="container" style="margin-top: 50px;">
-            <form id="w2v-form" class="form-inline" action="/user/login" method="post">
+            <!-- 
+            <form class="form-signin">   
+                {% raw xsrf_form_html() %}    
+                <h2 class="form-signin-heading">请登录</h2>
+                <input type="text" class="form-control input-lg" name="uname" placeholder="用户名" required="" autofocus="" />
+                <input type="password" class="form-control input-lg" name="upass" placeholder="密码" required=""/>      
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+                </label>
+                
+                <button class="btn btn-lg btn-primary btn-block" type="submit">登陆</button>   
+            </form>
+            -->
+            
+            <form id="form" class="form-inline" action="/user/login" method="post">
+                {% raw xsrf_form_html() %}
                 <div class="form-group">
-                    <label for="uname">username:</label>
-                    <input type="text" name="uname" class="form-control" placeholder="username">
-                    <label for="upass">password:</label>
+                    <label for="uname">用户名:</label>
+                    <input type="text" name="uname" class="form-control" placeholder="username">&nbsp;
+                    <label for="upass">密码:</label>
                     <input type="password" name="upass" class="form-control" placeholder="password">
                 </div>
 
-            <button type="submit" name="submit" class="btn btn-mid btn-default">Login</button>
+            <button type="submit" name="submit" class="btn btn-mid btn-default">登录</button>
         </form>
+        
         <hr>
         <div class="well well-sm" style="font-size: small;">
            Admin Demo
