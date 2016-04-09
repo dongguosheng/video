@@ -46,6 +46,7 @@ class UserProfile(Base):
     city = Column(String(50))
     score = Column(Integer)
     vote_max = Column(Integer)
+    is_admin = Column(Integer)
     user = relationship(User)
 
     def __repr__(self):
